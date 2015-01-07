@@ -13,7 +13,7 @@ module Neo4Apis
       class_option :import_has_one, type: :boolean, default: nil
       class_option :import_has_many, type: :boolean, default: nil
 
-      class_option :guess_associations, type: :boolean, default: false
+      class_option :guess_model, type: :boolean, default: false
 
       class_option :active_record_config_path, type: :string, default: './config/database.yml'
       class_option :active_record_environment, type: :string, default: 'development'
@@ -63,32 +63,60 @@ module Neo4Apis
         options[:"import_#{type}"].nil? ? options[:import_associations] : options[:"import_#{type}"]
       end
 
+
       def get_model(model_or_table_name)
+        get_model_class(model_or_table_name).tap do |model_class|
+          if options[:guess_model]
+            apply_guessed_table_name!(model_class)
+            apply_guessed_primary_key!(model_class)
+            apply_guessed_model_associations!(model_class)
+          end
+        end
+      end
+
+      def get_model_class(model_or_table_name)
         model_class = model_or_table_name
         model_class = model_or_table_name.classify unless model_or_table_name.match(/^[A-Z]/)
         model_class.constantize
       rescue NameError
-        Object.const_set(model_class, Class.new(::ActiveRecord::Base)).tap do |model_class|
-          apply_guessed_model_associations!(model_class) if options[:guess_associations]
-        end
+        Object.const_set(model_class, Class.new(::ActiveRecord::Base))
       end
 
       def apply_guessed_model_associations!(model_class)
         model_class.columns.each do |column|
-          next if not column.name.match(/_id$/)
+          match = column.name.match(/^(.*)(_id|Id)$/)
+          next if not match
 
           begin
-            base = column.name.humanize.tableize.split(' ').join('_')
+            base = match[1].tableize
 
-            model_class.belongs_to base.singularize.to_sym
+            model_class.belongs_to base.singularize.to_sym, foreign_key: column.name, class_name: base.classify if guessed_table_name(base.classify)
           rescue NameError
           end
         end
       end
 
+      def apply_guessed_table_name!(model_class)
+        guess = guessed_table_name(model_class.name)
+        model_class.table_name = guess if guess
+      end
+
+      def apply_guessed_primary_key!(model_class)
+        name = model_class.name
+        guess = (model_class.column_names & ['id', name.foreign_key, name.foreign_key.classify, 'uuid']).first
+        model_class.primary_key = guess if guess
+      end
+
+
       def active_record_config
         require 'yaml'
         YAML.load(File.read(options[:active_record_config_path]))[options[:active_record_environment]]
+      end
+
+      private
+
+      def guessed_table_name(model_name)
+        (::ActiveRecord::Base.connection.tables & [model_name.tableize, model_name.classify, model_name.tableize.singularize, model_name.classify.pluralize]).first
       end
     end
 
