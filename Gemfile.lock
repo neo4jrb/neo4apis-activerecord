@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    neo4apis-activerecord (0.7.0)
+    neo4apis-activerecord (0.2.1)
       activerecord (~> 4.0)
       neo4apis (~> 0.4.0)
 
