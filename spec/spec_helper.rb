@@ -9,7 +9,7 @@ module Helpers
     response = conn.get('/db/data/schema/constraint/')
     JSON.parse(response.body).each do |constraint|
       Neo4j::Session.query("DROP CONSTRAINT ON (label:`#{constraint['label']}`) ASSERT label.#{constraint['property_keys'].first} IS UNIQUE")
-    end 
+    end
 
     JSON.parse(conn.get('/db/data/schema/index/').body).each do |index|
       Neo4j::Session.query("DROP INDEX ON :`#{index['label']}`(#{index['property_keys'].first})")
@@ -22,4 +22,3 @@ RSpec.configure do |c|
 
   ActiveRecord::Migration.verbose = false
 end
-

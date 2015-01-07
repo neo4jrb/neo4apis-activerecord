@@ -5,6 +5,7 @@ gemspec
 group :development do
   gem 'pry'
   gem 'neo4apis', path: '../neo4apis'
+  gem 'rubocop'
 end
 
 group :test do
@@ -14,4 +15,3 @@ group :test do
   gem 'guard'
   gem 'guard-rspec'
 end
-

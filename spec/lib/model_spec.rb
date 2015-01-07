@@ -4,10 +4,10 @@ describe 'Model import' do
   before(:all) do
     system('rm test.db')
 
-    ActiveRecord::Base.establish_connection({
+    ActiveRecord::Base.establish_connection(
       adapter: :sqlite3,
       database: 'test.db'
-    })
+    )
 
     User = Class.new(ActiveRecord::Base) do
       self.table_name = 'users'
@@ -67,12 +67,12 @@ describe 'Model import' do
   end
 
   before do
-    migration_classes.each {|c| c.new.migrate(:up) }
+    migration_classes.each { |c| c.new.migrate(:up) }
     clear_neo4j(neo4j_connection, neo4j_url)
   end
 
   after do
-    migration_classes.reverse.each {|c| c.new.migrate(:down) }
+    migration_classes.reverse.each { |c| c.new.migrate(:down) }
   end
 
   # Helpers
@@ -104,7 +104,7 @@ describe 'Model import' do
         neo4japis_activerecord.import :FooRecord, bar
       end
 
-      expect(neo4j_connection.uniqueness_constraints(:FooRecord)).to eq({property_keys: [[:my_uid]]})
+      expect(neo4j_connection.uniqueness_constraints(:FooRecord)).to eq(property_keys: [[:my_uid]])
     end
   end
 
@@ -141,9 +141,5 @@ describe 'Model import' do
         expect(new_query.match(user: :User).match('user-[:foo_records]->(foo_record)').pluck('foo_record.my_uid')).to eq([bar.my_uid])
       end
     end
-
-
   end
-
 end
-

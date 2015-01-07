@@ -18,7 +18,7 @@ module Neo4Apis
       class_option :active_record_config_path, type: :string, default: './config/database.yml'
       class_option :active_record_environment, type: :string, default: 'development'
 
-      desc "models MODELS_OR_TABLE_NAMES", "Import SQL tables via ActiveRecord models"
+      desc 'models MODELS_OR_TABLE_NAMES', 'Import SQL tables via ActiveRecord models'
       def models(*models_or_table_names)
         setup
 
@@ -43,7 +43,7 @@ module Neo4Apis
       def setup
         if File.exist?('config/environment.rb')
           # Rails
-          require './config/environment' 
+          require './config/environment'
         else
           puts 'active_record_config', active_record_config.inspect
           ::ActiveRecord::Base.establish_connection(active_record_config)
@@ -88,13 +88,11 @@ module Neo4Apis
         require 'yaml'
         YAML.load(File.read(options[:active_record_config_path]))[options[:active_record_environment]]
       end
-
     end
 
     class Base < Thor
-      desc "activerecord SUBCOMMAND ...ARGS", "methods of importing data automagically from Twitter"
-      subcommand "activerecord", CLI::ActiveRecord
+      desc 'activerecord SUBCOMMAND ...ARGS', 'methods of importing data automagically from Twitter'
+      subcommand 'activerecord', CLI::ActiveRecord
     end
   end
 end
-

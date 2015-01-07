@@ -8,9 +8,9 @@ module Neo4Apis
     batch_size 1000
 
     def self.model_importer(model_class)
-      self.uuid model_class.name.to_sym, model_class.primary_key
+      uuid model_class.name.to_sym, model_class.primary_key
 
-      self.importer model_class.name.to_sym do |object|
+      importer model_class.name.to_sym do |object|
         node = add_model_node model_class, object
 
         model_class.reflect_on_all_associations.each do |association_reflection|
@@ -35,7 +35,6 @@ module Neo4Apis
           end
         end
       end
-
     end
 
     def add_model_node(model_class, object)
@@ -52,9 +51,5 @@ module Neo4Apis
 
       add_node model_class.name.to_sym, object_data, model_class.column_names
     end
-
-
   end
-
 end
-
