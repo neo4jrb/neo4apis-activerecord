@@ -22,7 +22,6 @@ module Neo4Apis
       def models(*models_or_table_names)
         setup
 
-        puts 'models_or_table_names', models_or_table_names.inspect
         model_classes = models_or_table_names.map(&method(:get_model))
 
         model_classes.each do |model_class|
@@ -45,7 +44,6 @@ module Neo4Apis
           # Rails
           require './config/environment'
         else
-          puts 'active_record_config', active_record_config.inspect
           ::ActiveRecord::Base.establish_connection(active_record_config)
         end
       end
