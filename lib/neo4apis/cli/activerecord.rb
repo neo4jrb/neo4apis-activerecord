@@ -68,20 +68,22 @@ module Neo4Apis
         model_class = model_or_table_name.classify unless model_or_table_name.match(/^[A-Z]/)
         model_class.constantize
       rescue NameError
-        model_class = Object.const_set(model_class, Class.new(::ActiveRecord::Base))
-        if options[:guess_associations]
-          model_class.columns.each do |column|
-            if column.name.match(/_id$/)
-              begin
-                base = column.name.humanize.tableize.split(' ').join('_')
+        Object.const_set(model_class, Class.new(::ActiveRecord::Base)).tap do |model_class|
+          apply_guessed_model_associations!(model_class) if options[:guess_associations]
+        end
+      end
 
-                model_class.belongs_to base.singularize.to_sym
-              rescue NameError
-              end
-            end
+      def apply_guessed_model_associations!(model_class)
+        model_class.columns.each do |column|
+          next if not column.name.match(/_id$/)
+
+          begin
+            base = column.name.humanize.tableize.split(' ').join('_')
+
+            model_class.belongs_to base.singularize.to_sym
+          rescue NameError
           end
         end
-        model_class
       end
 
       def active_record_config
