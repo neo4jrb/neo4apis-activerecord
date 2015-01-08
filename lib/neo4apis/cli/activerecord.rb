@@ -18,11 +18,13 @@ module Neo4Apis
       class_option :active_record_config_path, type: :string, default: './config/database.yml'
       class_option :active_record_environment, type: :string, default: 'development'
 
-      desc 'models MODELS_OR_TABLE_NAMES', 'Import SQL tables via ActiveRecord models'
-      def models(*models_or_table_names)
+      desc 'tables MODELS_OR_TABLE_NAMES', 'Import SQL specified tables'
+      def tables(*models_or_table_names)
         setup
 
         model_classes = models_or_table_names.map(&method(:get_model))
+
+        puts "Importing tables: " + model_classes.map(&:table_name).join(', ')
 
         model_classes.each do |model_class|
           ::Neo4Apis::ActiveRecord.model_importer(model_class)
@@ -35,6 +37,13 @@ module Neo4Apis
             end
           end
         end
+      end
+
+      desc 'all_tables', 'Import all SQL tables'
+      def all_tables
+        setup
+
+        models(*::ActiveRecord::Base.connection.tables)
       end
 
       private
