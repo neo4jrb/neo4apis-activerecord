@@ -3,7 +3,7 @@ $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |s|
   s.name     = 'neo4apis-activerecord'
-  s.version  = '0.4.0'
+  s.version  = '0.4.1'
   s.required_ruby_version = '>= 1.9.1'
 
   s.authors  = 'Brian Underwood'

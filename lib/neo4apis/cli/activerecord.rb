@@ -24,6 +24,34 @@ module Neo4Apis
       def tables(*models_or_table_names)
         setup
 
+        import_models_or_tables(*models_or_table_names)
+      end
+
+      desc 'models MODELS_OR_TABLE_NAMES', 'Import specified ActiveRecord models'
+      def models(*models_or_table_names)
+        setup
+
+        import_models_or_tables(*models_or_table_names)
+      end
+
+      desc 'all_tables', 'Import all SQL tables'
+      def all_tables
+        setup
+
+        import_models_or_tables(*::ActiveRecord::Base.connection.tables)
+      end
+
+      desc 'all_models', 'Import SQL tables using defined models'
+      def all_models
+        setup
+
+        Rails.application.eager_load!
+
+        import_models_or_tables(ActiveRecord::Base.descendants)
+      end
+
+
+      def import_models_or_tables(*models_or_table_names)
         model_classes = models_or_table_names.map(&method(:get_model))
 
         puts 'Importing tables: ' + model_classes.map(&:table_name).join(', ')
@@ -39,23 +67,6 @@ module Neo4Apis
             end
           end
         end
-      end
-
-      desc 'models MODELS_OR_TABLE_NAMES', 'Import specified ActiveRecord models'
-      def models(*models_or_table_names)
-        tables(*models_or_table_names)
-      end
-
-      desc 'all_tables', 'Import all SQL tables'
-      def all_tables
-        tables(*::ActiveRecord::Base.connection.tables)
-      end
-
-      desc 'all_models', 'Import SQL tables using defined '
-      def all_models
-        Rails.application.eager_load!
-
-        tables(ActiveRecord::Base.descendants)
       end
 
       private
