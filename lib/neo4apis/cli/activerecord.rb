@@ -50,6 +50,7 @@ module Neo4Apis
         import_models_or_tables(ActiveRecord::Base.descendants)
       end
 
+      private
 
       def import_models_or_tables(*models_or_table_names)
         model_classes = models_or_table_names.map(&method(:get_model))
@@ -68,8 +69,6 @@ module Neo4Apis
           end
         end
       end
-
-      private
 
       def setup
         if File.exist?(options[:startup_environment])
