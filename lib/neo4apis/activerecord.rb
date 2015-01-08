@@ -42,11 +42,7 @@ module Neo4Apis
       object_data = OpenStruct.new
 
       object.attributes.each do |column, value|
-        v = if coder = model_class.serialized_attributes[column]
-              coder.dump(value)
-            else
-              value
-            end
+        v = object.attributes_for_coder[column] || value
         object_data.send("#{column}=", v)
       end
 
