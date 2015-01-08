@@ -1,10 +1,10 @@
 # neo4apis-activerecord
 
-*The easiest and quickest way to copy data from PostgreSQL / mySQL / sqlite to Neo4j*
+**The easiest and quickest way to copy data from PostgreSQL / mySQL / sqlite to Neo4j**
 
-## Example commands:
+## How to run:
 
-### Without existing ActiveRecord application:
+Without existing ActiveRecord application:
 
     neo4apis activerecord all_tables --import-all-associations --identify-model
 
@@ -12,7 +12,7 @@ or
 
     neo4apis activerecord tables posts comments --import-all-associations --identify-model
 
-### With existing ActiveRecord application:
+With existing ActiveRecord application:
 
     neo4apis activerecord all_models --import-all-associations
 
@@ -46,7 +46,7 @@ For a table of blog posts, the following possibilities are used:
  * Primary keys: (e.g. `id`, `post_id`, `PostId`, or `uuid`
  * Foreign keys: `author_id` or `AuthorId` will be assumed to go to a table of authors (with a name identified as specified above)
 
-### `--import-belongs-to / `--import-has-many` / `--import-has-one` / `--import-all-associations`
+### `--import-belongs-to` / `--import-has-many` / `--import-has-one` / `--import-all-associations`
 
 Either specify that a certain class of associations should be imported from ActiveRecord models, or specify all with `--import-all-associations`
 
