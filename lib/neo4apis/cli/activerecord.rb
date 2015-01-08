@@ -47,7 +47,7 @@ module Neo4Apis
 
         Rails.application.eager_load!
 
-        import_models_or_tables(ActiveRecord::Base.descendants)
+        import_models_or_tables(*::ActiveRecord::Base.descendants)
       end
 
       private
@@ -93,8 +93,6 @@ module Neo4Apis
 
 
       def get_model(model_or_table_name)
-        return model_or_table_name if model_or_table_name.is_a?(ActiveRecord::Base)
-
         get_model_class(model_or_table_name).tap do |model_class|
           if options[:identify_model]
             apply_identified_table_name!(model_class)
@@ -105,6 +103,8 @@ module Neo4Apis
       end
 
       def get_model_class(model_or_table_name)
+        return model_or_table_name if model_or_table_name.ancestors.include?(::ActiveRecord::Base)
+
         model_class = model_or_table_name
         model_class = model_or_table_name.classify unless model_or_table_name.match(/^[A-Z]/)
         model_class.constantize
