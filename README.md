@@ -28,7 +28,7 @@ Using rubygems:
 
 ## How it works
 
-ActiveRecord models are either found or generated from table structures.  The models are then introspected to create nodes (from tables) and relationships (from associations) in neo4j.  The neo4apis library is used to load data efficiently in batches.
+[ActiveRecord](http://guides.rubyonrails.org/active_record_basics.html) is a [ORM](http://en.wikipedia.org/wiki/Object-relational_mapping) for ruby.  `neo4apis-activerecord` uses ActiveRecord models which are either found in an existing ruby app or generated from table structures.  The models are then introspected to create nodes (from tables) and relationships (from associations) in neo4j.  The neo4apis library is used to load data efficiently in batches.
 
 ## Options
 
@@ -40,13 +40,16 @@ For a list of all options run:
 
 The `--identify-model` option looks for tables' names/primay keys/foreign keys automatically.  Potential options are generated and the database is examined to find out which fits.
 
-For a table of blog posts, the following possibilities are used:
+As an example: for a table of posts the following possibilities would checked:
 
  * Names: `posts`, `post`, `Posts`, or `Post`
- * Primary keys: (e.g. `id`, `post_id`, `PostId`, or `uuid`
- * Foreign keys: `author_id` or `AuthorId` will be assumed to go to a table of authors (with a name identified as specified above)
+ * Primary keys: `id`, `post_id`, `PostId`, or `uuid`
+ * Foreign keys: `author_id` or `AuthorId` will be assumed to go to a table of authors (with a name identified as above)
 
-### `--import-belongs-to` / `--import-has-many` / `--import-has-one` / `--import-all-associations`
+### `--import-belongs-to`
+### `--import-has-many`
+### `--import-has-one`
+### `--import-all-associations`
 
-Either specify that a certain class of associations should be imported from ActiveRecord models, or specify all with `--import-all-associations`
+Either specify that a certain class of associations be imported from ActiveRecord models or specify all with `--import-all-associations`
 
