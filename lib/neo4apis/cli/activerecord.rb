@@ -26,7 +26,7 @@ module Neo4Apis
 
         model_classes = models_or_table_names.map(&method(:get_model))
 
-        puts "Importing tables: " + model_classes.map(&:table_name).join(', ')
+        puts 'Importing tables: ' + model_classes.map(&:table_name).join(', ')
 
         model_classes.each do |model_class|
           ::Neo4Apis::ActiveRecord.model_importer(model_class)
