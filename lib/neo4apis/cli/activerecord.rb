@@ -6,8 +6,6 @@ require 'colorize'
 module Neo4Apis
   module CLI
     class ActiveRecord < Thor
-      class_option :config_path, type: :string,  default: 'config/database.yml'
-
       class_option :import_all_associations, type: :boolean, default: false, desc: 'Shortcut for --import-belongs-to --import-has-many --import-has-one'
       class_option :import_belongs_to, type: :boolean, default: nil
       class_option :import_has_one, type: :boolean, default: nil
