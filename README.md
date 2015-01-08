@@ -6,11 +6,11 @@
 
 Without existing ActiveRecord application:
 
-    neo4apis activerecord all_tables --import-all-associations --identify-model
+    neo4apis activerecord all_tables --identify-model --import-all-associations
 
 or
 
-    neo4apis activerecord tables posts comments --import-all-associations --identify-model
+    neo4apis activerecord tables posts comments --identify-model --import-all-associations
 
 With existing ActiveRecord application:
 
