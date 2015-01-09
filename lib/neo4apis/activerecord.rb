@@ -8,6 +8,7 @@ module Neo4Apis
     batch_size 1000
 
     def self.model_importer(model_class)
+      return if model_class.primary_key.nil?
       uuid model_class.name.to_sym, model_class.primary_key
 
       importer model_class.name.to_sym do |object|
@@ -41,12 +42,25 @@ module Neo4Apis
     def add_model_node(model_class, object)
       object_data = OpenStruct.new
 
-      object.attributes.each do |column, value|
-        v = object.attributes_for_coder[column] || value
-        object_data.send("#{column}=", v)
+      object.class.column_names.each do |column_name|
+        object_data.send("#{column_name}=", attribute_for_coder(object, column_name))
       end
 
       add_node model_class.name.to_sym, object_data, model_class.column_names
+    end
+
+    def attribute_for_coder(object, column_name)
+      column = object.class.columns_hash[column_name]
+      if column.respond_to?(:cast_type)
+        column.cast_type.type_cast_from_user(object.attributes[column_name])
+      else
+        value = object.attributes[column_name]
+        if coder = object.class.serialized_attributes[column_name]
+          coder.dump(value)
+        else
+          value
+        end
+      end
     end
   end
 end

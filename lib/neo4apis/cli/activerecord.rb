@@ -2,10 +2,14 @@ require 'active_record'
 require 'active_support/inflector'
 require 'thor'
 require 'colorize'
+require 'neo4apis/table_resolver'
+require 'neo4apis/cli/base'
 
 module Neo4Apis
   module CLI
-    class ActiveRecord < Thor
+    class ActiveRecord < CLI::Base
+      include TableResolver
+
       class_option :import_all_associations, type: :boolean, default: false, desc: 'Shortcut for --import-belongs-to --import-has-many --import-has-one'
       class_option :import_belongs_to, type: :boolean, default: nil
       class_option :import_has_one, type: :boolean, default: nil
@@ -61,7 +65,15 @@ module Neo4Apis
 
         neo4apis_client.batch do
           model_classes.each do |model_class|
-            model_class.find_each do |object|
+            query = model_class.all
+
+            # Eager load association for faster import
+            include_list = model_class.reflect_on_all_associations.map do |association_reflection|
+              association_reflection.name if import_association?(association_reflection.macro)
+            end.compact
+            query = query.includes(*include_list.map(&:to_sym)) if include_list.present?
+
+            query.find_each do |object|
               neo4apis_client.import model_class.name.to_sym, object
             end
           end
@@ -101,9 +113,9 @@ module Neo4Apis
       end
 
       def get_model_class(model_or_table_name)
-        return model_or_table_name if model_or_table_name.ancestors.include?(::ActiveRecord::Base)
+        return model_or_table_name if model_or_table_name.is_a?(Class) && model_or_table_name.ancestors.include?(::ActiveRecord::Base)
 
-        model_class = model_or_table_name
+        model_class = model_or_table_name.gsub(/\s+/, '_')
         model_class = model_or_table_name.classify unless model_or_table_name.match(/^[A-Z]/)
         model_class.constantize
       rescue NameError
@@ -116,24 +128,23 @@ module Neo4Apis
           next if not match
 
           begin
-            base = match[1].tableize
+            base = match[1].gsub(/ +/, '_').tableize
 
-            if identified_table_name(base.classify) && model_class.name != base.classify
+            if identify_table_name(tables, base.classify) && model_class.name != base.classify
               model_class.belongs_to base.singularize.to_sym, foreign_key: column.name, class_name: base.classify
             end
-          rescue NameError
+          rescue UnfoundTableError
           end
         end
       end
 
       def apply_identified_table_name!(model_class)
-        identity = identified_table_name(model_class.name)
+        identity = identify_table_name(tables, model_class.name)
         model_class.table_name = identity if identity
       end
 
       def apply_identified_primary_key!(model_class)
-        name = model_class.name
-        identity = (model_class.column_names & ['id', name.foreign_key, name.foreign_key.classify, 'uuid']).first
+        identity = identify_primary_key(model_class.column_names, model_class.name)
         model_class.primary_key = identity if identity
       end
 
@@ -143,10 +154,8 @@ module Neo4Apis
         YAML.load(File.read(options[:active_record_config_path]))[options[:active_record_environment]]
       end
 
-      private
-
-      def identified_table_name(model_name)
-        (::ActiveRecord::Base.connection.tables & [model_name.tableize, model_name.classify, model_name.tableize.singularize, model_name.classify.pluralize]).first
+      def tables
+        ::ActiveRecord::Base.connection.tables
       end
     end
 
