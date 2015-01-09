@@ -134,6 +134,7 @@ module Neo4Apis
               model_class.belongs_to base.singularize.to_sym, foreign_key: column.name, class_name: base.classify
             end
           rescue UnfoundTableError
+            nil
           end
         end
       end
