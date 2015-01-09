@@ -42,8 +42,8 @@ The `--identify-model` option looks for tables' names/primay keys/foreign keys a
 
 As an example: for a table of posts the following possibilities would checked:
 
- * Names: `posts`, `post`, `Posts`, or `Post`
- * Primary keys: `id`, `post_id`, `PostId`, or `uuid`
+ * Names: Looks for names like `posts`, `post`, `Posts`, or `Post`
+ * Primary keys: Table schema is examined first.  If no primary key is specified it will look for columns like `id`, `post_id`, `PostId`, or `uuid`
  * Foreign keys: `author_id` or `AuthorId` will be assumed to go to a table of authors (with a name identified as above)
 
 ### `--import-belongs-to`
