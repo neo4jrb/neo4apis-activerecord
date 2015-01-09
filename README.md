@@ -36,6 +36,8 @@ For a list of all options run:
 
     neo4apis activerecord --help
 
+Some options of particular interest:
+
 ### `--identify-model`
 
 The `--identify-model` option looks for tables' names/primay keys/foreign keys automatically.  Potential options are generated and the database is examined to find out which fits.
@@ -52,4 +54,18 @@ As an example: for a table of posts the following possibilities would checked:
 ### `--import-all-associations`
 
 Either specify that a certain class of associations be imported from ActiveRecord models or specify all with `--import-all-associations`
+
+## Using `neo4apis-activerecord` from ruby
+
+If you'd like to do custom importing, you can use `neo4apis-activerecord` in the following way:
+
+    Neo4Apis::ActiveRecord.model_importer(SomeModel)
+
+    neo4apis_activerecord = Neo4Apis::ActiveRecord.new(Neo4j::Session.open, import_all_associations: true)
+
+    neo4apis_activerecord.batch do
+      SomeModel.where(condition: 'value').find_each do |object|
+        neo4apis_activerecord.import object
+      end
+    end
 
