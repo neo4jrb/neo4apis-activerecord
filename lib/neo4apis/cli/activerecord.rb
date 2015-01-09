@@ -145,7 +145,8 @@ module Neo4Apis
       end
 
       def apply_identified_primary_key!(model_class)
-        identity = identify_primary_key(model_class.column_names, model_class.name)
+        identity = ::ActiveRecord::Base.connection.primary_key(model_class.table_name)
+        identity ||= identify_primary_key(model_class.column_names, model_class.name)
         model_class.primary_key = identity if identity
       end
 
