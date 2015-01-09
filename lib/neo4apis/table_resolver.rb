@@ -20,9 +20,9 @@ module Neo4Apis
       (columns & %w(id uuid)).first
       columns.detect do |column|
         case standardize(column)
-        when 'id', 'uuid'
+        when 'id', 'uuid', /#{standardize(class_name.singularize)}id/, /#{standardize(class_name.pluralize)}id/
           true
-        when /#{standardize(class_name)}id/
+        when  
           true
         end
       end.tap do |found_key| # rubocop:disable Style/MultilineBlockChain
