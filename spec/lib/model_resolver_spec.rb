@@ -6,27 +6,6 @@ describe Neo4Apis::ModelResolver do
     Object.new.extend(Neo4Apis::ModelResolver)
   end
 
-  describe '#identify_foreign_key_bases' do
-    {
-      'foo_id' => 'foo',
-      'FooId' => 'Foo',
-      'Foo_id' => 'Foo',
-      'foo_Id' => 'foo',
-      'FooID' => 'Foo',
-      'foo_ID' => 'foo'
-    }.each do |column, foreign_key_base|
-      it "identifies #{column} foreign key as #{foreign_key_base}" do
-        expect(subject.identify_foreign_key_bases([column])).to eq([foreign_key_base])
-      end
-    end
-
-    %w(fooi food foo_bar id).each do |column|
-      it "identifies #{column} as not a foreign key" do
-        expect(subject.identify_foreign_key_bases([column])).to eq([])
-      end
-    end
-  end
-
   describe '#get_model_class' do
     before do
       stub_const('Foo', Class.new(::ActiveRecord::Base))

@@ -2,8 +2,8 @@ require 'neo4apis/table_resolver'
 
 module Neo4Apis
   module ModelResolver
-    def self.included(base)
-      base.include TableResolver
+    def self.included(included_class)
+      included_class.include TableResolver
     end
 
     def get_model(model_or_table_name)
@@ -27,9 +27,12 @@ module Neo4Apis
     end
 
     def apply_identified_model_associations!(model_class)
-      identify_foreign_key_bases(model_class.column_names).each do |foreign_key_base|
+      model_class.columns.each do |column|
+        match = column.match(/^(.+)_id$/i) || column.match(/^(.+)id$/i)
+        next if not match
+
         begin
-          base = foreign_key_base.gsub(/ +/, '_').tableize
+          base = match[1].gsub(/ +/, '_').tableize
 
           if identify_table_name(tables, base.classify) && model_class.name != base.classify
             model_class.belongs_to base.singularize.to_sym, foreign_key: column.name, class_name: base.classify
@@ -38,14 +41,6 @@ module Neo4Apis
           nil
         end
       end
-    end
-
-    def identify_foreign_key_bases(columns)
-      columns.map do |column|
-        match = column.match(/^(.+)_id$/i) || column.match(/^(.+)id$/i)
-
-        match && match[1]
-      end.compact
     end
 
     def apply_identified_table_name!(model_class)
