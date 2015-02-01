@@ -22,7 +22,7 @@ module Neo4Apis
         case standardize(column)
         when 'id', 'uuid', /#{standardize(class_name.singularize)}id/, /#{standardize(class_name.pluralize)}id/
           true
-        when  
+        when
           true
         end
       end.tap do |found_key| # rubocop:disable Style/MultilineBlockChain

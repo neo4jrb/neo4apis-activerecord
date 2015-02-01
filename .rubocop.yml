@@ -75,3 +75,5 @@ Lint/AssignmentInCondition:
 Style/DoubleNegation:
   Enabled: false
 
+Style/MultilineBlockChain:
+  Enabled: false
