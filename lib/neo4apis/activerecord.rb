@@ -21,8 +21,8 @@ module Neo4Apis
               referenced_object = object.send(association_reflection.name)
               add_model_relationship association_reflection.name, node, referenced_object if referenced_object
             end
-          when :has_many
-            if options[:import_has_many]
+          when :has_many, :has_and_belongs_to_many
+            if options[:"import_#{association_reflection.macro}"]
               object.send(association_reflection.name).each do |referenced_object|
                 add_model_relationship association_reflection.name, node, referenced_object if referenced_object
               end
