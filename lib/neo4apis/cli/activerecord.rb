@@ -10,6 +10,8 @@ module Neo4Apis
     class ActiveRecord < CLI::Base
       include ModelResolver
 
+      class_option :debug, type: :boolean, default: false, desc: 'Output debugging information'
+
       class_option :import_all_associations, type: :boolean, default: false, desc: 'Shortcut for --import-belongs-to --import-has-many --import-has-one'
       class_option :import_belongs_to, type: :boolean, default: nil
       class_option :import_has_one, type: :boolean, default: nil
@@ -54,6 +56,12 @@ module Neo4Apis
 
       private
 
+      def debug_log(*messages)
+        return unless options[:debug]
+
+        puts(*messages)
+      end
+
       def import_models_or_tables(*models_or_table_names)
         model_classes = models_or_table_names.map(&method(:get_model))
 
@@ -82,7 +90,7 @@ module Neo4Apis
         model_class.reflect_on_all_associations.map do |association_reflection|
           association_reflection.name.to_sym if import_association?(association_reflection.macro)
         end.compact.tap do |include_list|
-          debug_log 'include_list', include_list
+          debug_log 'include_list', include_list.inspect
         end
       end
 

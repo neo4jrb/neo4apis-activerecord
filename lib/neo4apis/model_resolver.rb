@@ -35,6 +35,7 @@ module Neo4Apis
           base = match[1].gsub(/ +/, '_').tableize
 
           if identify_table_name(tables, base.classify) && model_class.name != base.classify
+            debug_log "Defining: belongs_to #{base.singularize.to_sym.inspect}, foreign_key: #{column.name.inspect}, class_name: #{base.classify.inspect}"
             model_class.belongs_to base.singularize.to_sym, foreign_key: column.name, class_name: base.classify
           end
         rescue UnfoundTableError
