@@ -3,8 +3,6 @@ require 'ostruct'
 
 module Neo4Apis
   class ActiveRecord < Base
-    prefix nil
-
     batch_size 1000
 
     def self.model_importer(model_class)
