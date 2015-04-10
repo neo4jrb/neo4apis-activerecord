@@ -18,6 +18,6 @@ A ruby gem using neo4apis to make importing SQL data to neo4j easy
   s.require_path = 'lib'
   s.files = Dir.glob('{bin,lib,config}/**/*') + %w(README.md Gemfile neo4apis-activerecord.gemspec)
 
-  s.add_dependency('neo4apis', '~> 0.6.0')
+  s.add_dependency('neo4apis', '>= 0.8.1')
   s.add_dependency('activerecord', '~> 4.0')
 end
