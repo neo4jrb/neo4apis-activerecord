@@ -3,7 +3,7 @@ require 'neo4apis/table_resolver'
 module Neo4Apis
   module ModelResolver
     def self.included(included_class)
-      included_class.include TableResolver
+      included_class.send(:include, TableResolver)
     end
 
     def get_model(model_or_table_name)
