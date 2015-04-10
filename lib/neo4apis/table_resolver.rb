@@ -1,9 +1,9 @@
 
 module Neo4Apis
+  class UnfoundTableError < StandardError
+  end
+ 
   module TableResolver
-    class UnfoundTableError < StandardError
-    end
-
     class UnfoundPrimaryKeyError < StandardError
     end
 

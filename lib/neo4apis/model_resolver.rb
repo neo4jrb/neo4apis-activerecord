@@ -1,6 +1,9 @@
 require 'neo4apis/table_resolver'
 
 module Neo4Apis
+  class UnfoundTableError < StandardError
+  end
+ 
   module ModelResolver
     def self.included(included_class)
       included_class.include TableResolver
@@ -28,7 +31,7 @@ module Neo4Apis
 
     def apply_identified_model_associations!(model_class)
       model_class.columns.each do |column|
-        match = column.match(/^(.+)_id$/i) || column.match(/^(.+)id$/i)
+        match = column.name.match(/^(.+)_id$/i) || column.name.match(/^(.+)id$/i)
         next if not match
 
         begin
