@@ -12,7 +12,7 @@ module Neo4Apis
       tables.detect do |table_name|
         potential_table_comparisons.include?(standardize(table_name))
       end.tap do |found_name| # rubocop:disable Style/MultilineBlockChain
-        fail UnfoundTableError, "Could not find a table for #{class_name}." if found_name.nil?
+        puts "WARNING: Could not find a table for #{class_name}." if found_name.nil?
       end
     end
 
