@@ -105,7 +105,7 @@ module Neo4Apis
       NEO4APIS_CLIENT_CLASS = ::Neo4Apis::ActiveRecord
 
       def neo4apis_client
-        @neo4apis_client ||= NEO4APIS_CLIENT_CLASS.new(Neo4j::Session.open(:server_db, parent_options[:neo4j_url]),
+        @neo4apis_client ||= NEO4APIS_CLIENT_CLASS.new(specified_neo4j_session,
                                                        import_belongs_to: import_association?(:belongs_to),
                                                        import_has_one: import_association?(:has_one),
                                                        import_has_many: import_association?(:has_many))
