@@ -3,7 +3,7 @@ $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |s|
   s.name     = 'neo4apis-activerecord'
-  s.version  = '0.8.0'
+  s.version  = '0.9.0'
   s.required_ruby_version = '>= 1.9.1'
 
   s.authors  = 'Brian Underwood'
@@ -20,4 +20,5 @@ A ruby gem using neo4apis to make importing SQL data to neo4j easy
 
   s.add_dependency('neo4apis', '>= 0.8.1')
   s.add_dependency('activerecord', '~> 4.0')
+  s.add_dependency('composite_primary_keys', '~> 8.0')
 end

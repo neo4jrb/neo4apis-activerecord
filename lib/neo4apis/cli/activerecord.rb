@@ -68,7 +68,7 @@ module Neo4Apis
         puts 'Importing tables: ' + model_classes.map(&:table_name).join(', ')
 
         model_classes.each do |model_class|
-          ::Neo4Apis::ActiveRecord.model_importer(model_class)
+          NEO4APIS_CLIENT_CLASS.model_importer(model_class)
         end
 
         neo4apis_client.batch do

@@ -53,8 +53,13 @@ module Neo4Apis
     end
 
     def apply_identified_primary_key!(model_class)
-      identity = ::ActiveRecord::Base.connection.primary_key(model_class.table_name)
+      identity = if model_class.columns.map(&:type) == [:integer, :integer]
+        model_class.columns.map(&:name)
+      else
+        ::ActiveRecord::Base.connection.primary_key(model_class.table_name)
+      end
       identity ||= identify_primary_key(model_class.column_names, model_class.name)
+
       model_class.primary_key = identity if identity
     end
   end

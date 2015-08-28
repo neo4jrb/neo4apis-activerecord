@@ -22,8 +22,6 @@ module Neo4Apis
         case standardize(column)
         when 'id', 'uuid', /#{standardize(class_name.singularize)}id/, /#{standardize(class_name.pluralize)}id/
           true
-        when
-          true
         end
       end.tap do |found_key| # rubocop:disable Style/MultilineBlockChain
         fail UnfoundPrimaryKeyError, "Could not find a primary key for #{class_name}." if found_key.nil?
