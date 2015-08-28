@@ -50,8 +50,7 @@ module Neo4Apis
       referenced_class = referenced_object.class
       referenced_node = add_model_node referenced_class, referenced_object
 
-      require 'pry'
-      add_relationship relationship_name, node, referenced_node rescue binding.pry
+      add_relationship relationship_name, node, referenced_node
     end
 
     def add_model_node(model_class, object)
